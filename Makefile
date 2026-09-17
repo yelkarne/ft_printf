@@ -1,55 +1,44 @@
-NAME		= libftprintf.a
+NAME        = libftprintf.a
 
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror
-AR			= ar
-ARFLAGS		= rcs
+CC          = cc
+CFLAGS      = -Wall -Wextra -Werror
+AR          = ar rcs
+RM          = rm -f
 
-SRC_DIR		= src
-OBJ_DIR		= obj
-INC_DIR		= includes
+SRC         = ft_printf.c \
+              ft_print_chars.c \
+              ft_print_nbrs.c \
+              ft_print_hex.c \
+              ft_print_ptr.c
 
-SRCS		=	$(SRC_DIR)/ft_printf.c \
-				$(SRC_DIR)/ft_printf_utils.c \
-				$(SRC_DIR)/ft_printf_convert.c
+OBJ         = $(SRC:.c=.o)
 
-OBJS		= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+BONUS_SRC   = ft_printf_bonus.c \
+              ft_print_chars_bonus.c \
+              ft_print_nbrs_bonus.c \
+              ft_print_hex_bonus.c \
+              ft_print_ptr_bonus.c \
+              ft_parser_bonus.c
 
-# ---- Bonus sources (only compiled with "make bonus") ----
-BONUS_SRCS	=	$(SRC_DIR)/ft_printf_bonus.c
-
-BONUS_OBJS	= $(BONUS_SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-
-# ---- Libft (optional, remove this block if you don't use libft) ----
-LIBFT_DIR	= libft
-LIBFT		= $(LIBFT_DIR)/libft.a
+BONUS_OBJ   = $(BONUS_SRC:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJS)
-	$(AR) $(ARFLAGS) $(NAME) $(OBJS)
-	@echo "$(NAME) created."
+$(NAME): $(OBJ)
+	$(AR) $(NAME) $(OBJ)
 
-bonus: CFLAGS += -DBONUS=1
-bonus: $(LIBFT) $(OBJS) $(BONUS_OBJS)
-	$(AR) $(ARFLAGS) $(NAME) $(OBJS) $(BONUS_OBJS)
-	@echo "$(NAME) (with bonus) created."
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-$(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -I $(INC_DIR) -I $(LIBFT_DIR) -c $< -o $@
+bonus:
+	@make WITH_BONUS=1 all
 
 clean:
-	rm -rf $(OBJ_DIR)
-	$(MAKE) -C $(LIBFT_DIR) clean
+	$(RM) $(OBJ) $(BONUS_OBJ)
 
 fclean: clean
-	rm -f $(NAME)
-	$(MAKE) -C $(LIBFT_DIR) fclean
+	$(RM) $(NAME)
 
 re: fclean all
 
-.PHONY: all bonus clean fclean re
+.PHONY: all clean fclean re bonus

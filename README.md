@@ -13,7 +13,7 @@ extensible parser for format strings.
 
 The function handles the following conversions:
 
-| Conversion | Description                              |
+| Conversion | Description                               |
 |------------|-------------------------------------------|
 | `%c`       | Single character                          |
 | `%s`       | String                                    |
@@ -23,9 +23,6 @@ The function handles the following conversions:
 | `%x`       | Hexadecimal, lowercase                    |
 | `%X`       | Hexadecimal, uppercase                    |
 | `%%`       | Literal percent sign                      |
-
-<!-- If you did the bonus, add the flags you support here, e.g.: -->
-<!-- Bonus flags supported: `-`, `0`, `.` (precision), field width, `#`, `+`, space -->
 
 ## Instructions
 
@@ -61,28 +58,17 @@ cc your_file.c -L. -lftprintf -I includes -o your_program
 
 ## Resources
 
-<!-- List the documentation / references you actually used, for example: -->
 - `man 3 printf`
 - `man 3 stdarg` (`va_start`, `va_arg`, `va_copy`, `va_end`)
 - 42 subject PDF (`en_subject__ft_printf.pdf`)
 
 ### AI usage
 
-<!--
-Be honest and specific here, as required by the subject.
-Example structure:
-- Which parts of the project (if any) you discussed with an AI tool
-- What kind of help was requested (e.g. clarifying variadic function syntax,
-  debugging a segfault, reviewing Norm compliance of the Makefile)
-- Confirm that the core logic/algorithm was designed and written by you
--->
+An AI assistant was used only to help structure and format this `README.md` file (headings, tables, wording) after the project's own logic and code were designed and written independently. No AI-generated code was used for the implementation of the `ft_printf` functions themselves, in line with the project's AI Instructions.
 
 ## Technical choices — algorithm & data structure
 
-<!--
-Required section. Explain and justify, for example:
-- How the format string is parsed (state machine? index-based loop?)
-- How each conversion specifier is dispatched (function pointer table? switch/if-else?)
-- How flags/width/precision (if bonus done) are parsed and stored
-- Why you chose this structure (extensibility, readability, avoiding duplication)
--->
+- **Format String Parsing:** The format string is iterated character by character using an index-based loop. When a percent sign (`%`) is encountered, the parser inspects the next character to identify the conversion specifier.
+- **Modular Dispatching:** Instead of a monolithic block of code, each conversion (`%c`, `%s`, `%p`, `%d`, `%i`, `%u`, `%x`, `%X`, `%%`) is delegated to dedicated helper functions. This ensures clean code, readability, and full compliance with the 42 Norm.
+- **Variadic Argument Handling:** Standard `<stdarg.h>` macros (`va_start`, `va_arg`, `va_end`) are used to dynamically extract arguments from the `va_list` based on the type implied by the specifier.
+- **Return Value Tracking:** Every helper function computes and returns the number of characters it prints. These counts are accumulated throughout the string parsing process so that `ft_printf` accurately mirrors the return value behavior of the original `printf`.
